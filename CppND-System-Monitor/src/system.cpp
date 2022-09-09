@@ -32,15 +32,6 @@ vector<Process>& System::Processes() {
   return processes_; 
 }
 
-vector<Process>& System::Cpu_Processes() {
-  for (int i = 0; i < LinuxParser::CpuUtilization().size(); i++) {
-  	Process cpu_proc;
-    cpu_proc.CpuUtilization(LinuxParser::CpuUtilization()[i]);
-    cpu_processes_.emplace_back(cpu_proc);
-  }
-  return cpu_processes_; 
-}
-
 // TODO: Return the system's kernel identifier (string)
 std::string System::Kernel() { 
   return LinuxParser::Kernel(); 

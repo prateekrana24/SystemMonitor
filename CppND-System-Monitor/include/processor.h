@@ -7,6 +7,7 @@ class Processor {
 
   // TODO: Declare any necessary private members
  private:
+  long totjiff_, actjiff_, idlejiff_;  
 };
 
 #endif

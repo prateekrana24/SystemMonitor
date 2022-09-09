@@ -109,13 +109,13 @@ long LinuxParser::UpTime() {
 // TODO: Read and return the number of jiffies for the system
 long LinuxParser::Jiffies() {
   string line, cpu;
-  long user, nice, system, idle, iowait, irq, softirq, total_jiff;
-  std::ifstream filestream(kProcDirectory + kStatusFilename);
+  long user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice, total_jiff;
+  std::ifstream filestream(kProcDirectory + kStatFilename);
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
-  	  linestream >> cpu >> user >> nice >> system >> idle >> iowait >> irq >> softirq;
-      total_jiff = user + nice + system + idle + iowait + irq + softirq;
+  	  linestream >> cpu >> user >> nice >> system >> idle >> iowait >> irq >> softirq >> steal >> guest >> guest_nice;
+      total_jiff = user + nice + system + idle + iowait + irq + softirq + steal + guest + guest_nice;
   	 }
  	}
    return total_jiff;
@@ -126,7 +126,7 @@ long LinuxParser::Jiffies() {
 long LinuxParser::ActiveJiffies(int pid) { 
   string line;
   long utime, stime, cutime, cstime, pid_activejiff;
-  std::ifstream filestream(kProcDirectory + to_string(pid) + kStatusFilename);
+  std::ifstream filestream(kProcDirectory + to_string(pid) + kStatFilename);
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
@@ -157,7 +157,7 @@ long LinuxParser::ActiveJiffies(int pid) {
 long LinuxParser::ActiveJiffies() { 
   string line, cpu;
   long user, nice, system, active_jiff;
-  std::ifstream filestream(kProcDirectory + kStatusFilename);
+  std::ifstream filestream(kProcDirectory + kStatFilename);
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
@@ -172,7 +172,7 @@ long LinuxParser::ActiveJiffies() {
 long LinuxParser::IdleJiffies() { 
   string line, cpu;
   long user, nice, system, idle, iowait, irq, softirq, idle_jiff;
-  std::ifstream filestream(kProcDirectory + kStatusFilename);
+  std::ifstream filestream(kProcDirectory + kStatFilename);
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
@@ -306,14 +306,13 @@ string LinuxParser::User(int pid) {
 long LinuxParser::UpTime(int pid) { 
   string line, username, address;
   long proc_uptime;
-  std::ifstream filestream(kProcDirectory + to_string(pid) + kStatusFilename);
+  std::ifstream filestream(kProcDirectory + to_string(pid) + kStatFilename);
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
-      linestream >> address;
-      if (linestream >> line[24]) {
-      	proc_uptime = line[24];
-      }
+      while (linestream >> address) {
+      	proc_uptime = address[21];
+     }
     }
   }
   return proc_uptime;
