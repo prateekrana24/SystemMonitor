@@ -11,7 +11,7 @@ float Processor::Utilization() {
   
   //float diff = float(totjiff_) - (float(actjiff_) + float(idlejiff_));
   
-  agg_cpu = (float(actjiff_) + float(idlejiff_)) / float(totjiff_);
+  agg_cpu = float(actjiff_) / float(totjiff_);
   //agg_cpu = diff / float(totjiff_); 
   
   return agg_cpu;
