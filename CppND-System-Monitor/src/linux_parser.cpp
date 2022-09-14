@@ -263,7 +263,7 @@ string LinuxParser::Command(int pid) {
 // REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::Ram(int pid) { 
   string line, address, proc_mem;
-  float final_mem;
+  long final_mem = 0;
   std::ifstream filestream(kProcDirectory + to_string(pid) + kStatusFilename);
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
@@ -274,7 +274,11 @@ string LinuxParser::Ram(int pid) {
       }
     }
   }
-  final_mem = stof(proc_mem) / 1024;
+  
+  if (proc_mem != "") 
+  {
+    final_mem = stol(proc_mem) / 1024;
+  }
   return to_string(final_mem);
 }
 
@@ -329,7 +333,7 @@ if (filestream.is_open()) {
     int index = 0;
     while (linestream >> address) {
       if (index == 21) {
-        proc_uptime = stoi(address); 
+        proc_uptime = stol(address); 
       }
       index++;
     }
